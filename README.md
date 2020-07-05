@@ -22,7 +22,7 @@
 
   - 如果你是Windows10用户，请参考[neural_renderer-win10](https://github.com/lstcutong/neural_renderer_pytorch-win10) 进行安装
 
-下载本代码依赖的静态资源文件，解压到`/VideoFace3D/data`，下载链接[data.zip](https://pan.baidu.com/s/1B4hSHIbg2fsXk6e0zN2jsg)，密码 gdfz
+下载本代码依赖的静态资源文件，解压到`/VideoFace3D/data`，下载链接[data.zip](https://pan.baidu.com/s/1ePnoTMbSo9o7L-VOoAdfgw)，密码 p1zo
 
 推荐使用`develop`模式安装代码  `python setup.py develop`
 
