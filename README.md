@@ -1,6 +1,6 @@
 # video-face-3d
 
-人脸工具包大杂烩，主要整合了近年来的SOTA的一些方法，包括视频人脸追踪，68关键点检测，三维人脸3DMM参数标注等
+人脸工具包大杂烩，主要整合了近年来的SOTA的一些方法，包括视频人脸追踪，68关键点检测，三维人脸3DMM参数标注，shape-from-shading等
 
 
 
@@ -28,7 +28,38 @@
 
 
 
+## Examples
+
+- 人脸关键点检测-单图像结果
+
+  ```
+  cd examples
+  python example_landmarks_single_image.py
+  ```
+
+<img src="./examples/example_results/landmark.png" style="zoom:33%;" />
+
+- 3DMM参数化模型拟合-单图像结果
+
+  ```
+  cd examples
+  python example_fitting_single_image.py
+  ```
+
+<img src="./examples/example_results/fitting.png" style="zoom:33%;" />
+
+- SFS- shape-from-shading 单图像结果
+
+```
+cd examples
+python example_sfs_single_image.py
+```
+
+
+
+<img src="./examples/example_results/sfs.png" style="zoom:33%;" />
+
 ## TODO
 
-- example例程
+- example视频
 - api说明
