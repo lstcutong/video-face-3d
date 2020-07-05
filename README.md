@@ -37,7 +37,7 @@
   python example_landmarks_single_image.py
   ```
 
-<img src="./examples/example_results/landmark.png" width="300" height="243" />
+<img src="./examples/example_results/landmark.png" width="500" height="406" />
 
 - 3DMM参数化模型拟合-单图像结果
 
@@ -46,7 +46,7 @@
   python example_fitting_single_image.py
   ```
 
-<img src="./examples/example_results/fitting.png" width="300" height="338" />
+<img src="./examples/example_results/fitting.png" width="400" height="458" />
 
 - SFS- shape-from-shading 单图像结果
 
@@ -57,7 +57,7 @@ python example_sfs_single_image.py
 
 
 
-<img src="./examples/example_results/sfs.png" style="zoom:33%;" />
+<img src="./examples/example_results/sfs.png" width="700" height="303" />
 
 ## TODO
 
