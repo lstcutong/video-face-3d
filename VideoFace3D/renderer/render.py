@@ -267,12 +267,15 @@ class Renderer(nn.Module):
             vertices = weak_projection(vertices, K, R, t, orig_size)
             # 正则化一下，让脸颊到鼻尖的向量和z轴负方向夹角小于90度 (a,b,c)*(0,0,-1)>0 -> c<0
             # 另外将z值全部归到正轴上去
-            from MorphableModelFitting.models.face_model import FaceModelBFM
-            front_idx, back_idx_1, back_idx_2 = FaceModelBFM().keypoints[30], FaceModelBFM().keypoints[0], FaceModelBFM().keypoints[16]
+            #from MorphableModelFitting.models.face_model import FaceModelBFM
+
+
+            front_idx, back_idx_1, back_idx_2 = self.facemodel.keypoints[30], self.facemodel.keypoints[0], self.facemodel.keypoints[16]
             for i in range(len(vertices)):
                 back_z = (vertices[i, back_idx_1, 2] + vertices[i, back_idx_2, 2]) / 2
                 if (vertices[i, front_idx, 2] - back_z) > 0:
                     vertices[i, :, 2] = -vertices[i, :, 2]
+
             vertices[:, :, 2] = vertices[:, :, 2] - torch.min(vertices[:, :, 2], dim=1)[0].unsqueeze(1) + 1
 
         # lighting
@@ -292,7 +295,7 @@ class Renderer(nn.Module):
                 self.light_direction)
         elif self.light_mode == "SH":
             point_buf = torch.from_numpy(self.facemodel.point_buf).long() - 1
-            point_norm = compute_point_norm(vertices, faces[0][:, list(reversed(range(faces.shape[-1])))], point_buf)
+            point_norm = compute_point_norm(vertices, faces[0], point_buf)
 
             # texture = texture_from_point2faces(triangles, texture).reshape((batch, -1, 3))
             textures, _ = Illumination_SH(textures, point_norm, self.SH_coeff)

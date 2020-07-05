@@ -4,7 +4,6 @@ As implemented in https://github.com/abewley/sort but with some modifications
 
 from __future__ import print_function
 
-import MorphableModelFitting.face_track.lib.utils as utils
 import numpy as np
 from MorphableModelFitting.face_track.src.data_association import associate_detections_to_trackers
 from MorphableModelFitting.face_track.src.kalman_tracker import KalmanBoxTracker

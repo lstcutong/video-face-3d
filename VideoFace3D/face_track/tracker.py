@@ -1,8 +1,12 @@
 import argparse
 import os
 from time import time
+import sys
 
-import MorphableModelFitting.face_track.align.detect_face as detect_face
+#print(sys.path)
+#import MorphableModelFitting as mmf
+
+from MorphableModelFitting.face_track.align import detect_face
 import cv2
 import numpy as np
 import tensorflow as tf

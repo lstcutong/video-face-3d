@@ -16,7 +16,7 @@ class FaceModelBFM():
         self.point_buf = model[
             'point_buf']  # adjacent face index for each vertex, starts from 1 (only used for calculating face normal)
         # tri can be used for calculating each face's norm
-        self.tri = model['tri']  # vertex index for each triangle face, starts from 1
+        self.tri = model['tri'][:,::-1].copy()  # vertex index for each triangle face, starts from 1
         self.keypoints = np.squeeze(model['keypoints']).astype(np.int32) - 1  # 68 face landmark index, starts from 0
         self.transform_keypoints_index()
 

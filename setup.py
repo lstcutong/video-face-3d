@@ -8,7 +8,7 @@ setup(
     author='Luo Shoutong',
     author_email='MF1933071@smail.nju.edu.cn',
     license='Magic',
-    version='0.0.1',
+    version='0.1.0',
     name='VideoFace3D',
     include_package_data = True,
     packages=find_packages(),

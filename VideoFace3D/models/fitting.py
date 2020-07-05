@@ -66,12 +66,49 @@ class FaceShapeOptimizer(nn.Module):
 
 
 class FaceLightOptimizer_SH(nn.Module):
-    pass
+    def __init__(self, init_gamma,  cuda=True):
+        super(FaceLightOptimizer_SH, self).__init__()
+        self.batch = len(init_gamma)
+        self.device = torch.device("cuda" if torch.cuda.is_available() and cuda else "cpu")
+        self.gamma = nn.Parameter(torch.Tensor(init_gamma)).float()
+        self.facemodel = FaceModelBFM()
+
+    def forward(self, s, R, t, idi, ex, tex, image_size):
+        '''
+
+        :param s: [batch,1]
+        :param R: [batch,3]
+        :param t: [batch,3]
+        :param id: [batch,80]
+        :param ex: [batch,64]
+        :param tex: [batch,80]
+        :return:
+        '''
+        scale = to_standard_tensor(s, self.device).unsqueeze(1)
+        euler = to_standard_tensor(R, self.device)
+        trans = to_standard_tensor(t, self.device).unsqueeze(1)
+        ident = to_standard_tensor(idi, self.device)
+        expre = to_standard_tensor(ex, self.device)
+        textu = to_standard_tensor(tex, self.device)
+
+        K = torch.Tensor.repeat(torch.eye(3).unsqueeze(0), (self.batch, 1, 1)).to(self.device) * scale
+        rot_mat = euler2rot(euler)
+
+        renderer = Renderer(image_size=image_size, K=K, R=rot_mat, t=trans, near=0.1, far=10000,
+                            light_mode="SH", SH_Coeff=self.gamma)
+        shape = self.facemodel.shape_formation(ident, expre)
+        texture = self.facemodel.texture_formation(textu)
+        triangles = torch.Tensor.repeat((torch.from_numpy(self.facemodel.tri) - 1).long().unsqueeze(0),
+                                        (self.batch, 1, 1)).to(
+            self.device)
+
+        rgb, depth, silh = renderer(shape, triangles, texture)
+        return rgb
 
 
-class FaceLightOptimizer_phong(nn.Module):
+class FaceLightOptimizer_parallel(nn.Module):
     def __init__(self, init_direction, init_ambient, cuda=True):
-        super(FaceLightOptimizer_phong, self).__init__()
+        super(FaceLightOptimizer_parallel, self).__init__()
         self.batch = len(init_direction)
         self.device = torch.device("cuda" if torch.cuda.is_available() and cuda else "cpu")
         self.direction = nn.Parameter(torch.Tensor(init_direction)).float()
@@ -100,14 +137,14 @@ class FaceLightOptimizer_phong(nn.Module):
         rot_mat = euler2rot(euler)
 
         renderer = Renderer(image_size=image_size, K=K, R=rot_mat, t=trans, near=0.1, far=10000,
-                            light_direction=self.direction, light_color_ambient=self.ambient)
+                            light_mode="parallel", light_direction=self.direction, light_color_ambient=self.ambient)
         shape = self.facemodel.shape_formation(ident, expre)
         texture = self.facemodel.texture_formation(textu)
         triangles = torch.Tensor.repeat((torch.from_numpy(self.facemodel.tri) - 1).long().unsqueeze(0),
                                         (self.batch, 1, 1)).to(
             self.device)
 
-        texture = texture_from_point2faces(triangles, texture) / 255
+        #texture = texture_from_point2faces(triangles, texture) / 255
 
         rgb, depth, silh = renderer(shape, triangles, texture)
         return rgb
@@ -292,11 +329,12 @@ class FaceFittingPipline(FittingPipline):
         image_size = reference_images[0].shape[0]
 
         if mode == "SH":
-            o_mizer = FaceLightOptimizer_SH()
-        elif mode == "phong":
+            init_gamma = np.repeat(np.array([np.zeros(27)]).astype(np.float32), batch, 0)
+            o_mizer = FaceLightOptimizer_SH(init_gamma)
+        elif mode == "parallel":
             init_direction = np.repeat(np.array([[0.0, 0.0, -1.0]]), batch, 0)
             init_ambient = np.repeat(np.array([[0.5, 0.5, 0.5]]), batch, 0)
-            o_mizer = FaceLightOptimizer_phong(init_direction, init_ambient, self.cuda)
+            o_mizer = FaceLightOptimizer_parallel(init_direction, init_ambient, self.cuda)
         else:
             return None
 
@@ -346,7 +384,7 @@ class FaceFittingPipline(FittingPipline):
                     break
 
         if mode == "SH":
-            res = None
+            res = {"gamma": o_mizer.gamma.cpu().detach().numpy()}
         elif mode == "phong":
             res = {"direction": o_mizer.direction.cpu().detach().numpy(),
                    "ambient": o_mizer.ambient.cpu().detach().numpy()}
@@ -395,9 +433,12 @@ class FaceFittingPipline(FittingPipline):
         shape = self.facemodel.shape_formation(torch.from_numpy(init_idi), torch.from_numpy(init_exp))
 
         # angles[:, 0] = -angles[:, 0]
-        angles[:, 1] = angles[:, 1] + np.pi  # pitch, yaw, roll
+         # pitch, yaw, roll
 
+        angles[:, 1] = angles[:, 1] + np.pi
         angles = angles % (2 * np.pi)
+        #gamma = - gamma
+
         # np.set_printoptions(suppress=True)
         # print(rad2degree(angles))
 
@@ -509,7 +550,7 @@ class FaceFittingPipline(FittingPipline):
 
         return all_result
 
-    def start_fitting_light_224(self, image_path, s, R, t, idi, ex, tex, mode="phong"):
+    def start_fitting_light_224(self, image_path, s, R, t, idi, ex, tex, mode="parallel"):
         reference_imgs = []
         for i in range(len(image_path)):
             img = cv2.imread(image_path[i])

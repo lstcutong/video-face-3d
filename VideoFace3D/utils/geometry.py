@@ -6,6 +6,7 @@ from MorphableModelFitting.utils.Global import *
 import neural_renderer as nr
 import math
 
+
 def euler2rot(euler_angle):
     batch_size = euler_angle.shape[0]
     theta = -euler_angle[:, 0].reshape(-1, 1, 1)
@@ -29,6 +30,7 @@ def euler2rot(euler_angle):
         torch.cat((zero, zero, one), 1)
     ), 2)
     return torch.bmm(rot_x, torch.bmm(rot_y, rot_z))
+
 
 def texture_from_point2faces(triangles, texutures):
     batch = len(texutures)
@@ -61,6 +63,7 @@ def POS(xp, x):
 
     return t, s
 
+
 def alignment_and_crop(image_path, align_kp):
     Lm3D = loadmat(SIMILARITY_LM3D_ALL_MODEL_PATH)
     Lm3D = Lm3D['lm']
@@ -70,21 +73,22 @@ def alignment_and_crop(image_path, align_kp):
                      Lm3D[lm_idx[5], :], Lm3D[lm_idx[6], :]], axis=0)
     Lm3D = Lm3D[[1, 2, 0, 3, 4], :]
 
-    Lm2D = np.stack([align_kp[lm_idx[0], :], np.mean(align_kp[lm_idx[[1, 2]], :], 0), np.mean(align_kp[lm_idx[[3, 4]], :], 0),
-                     align_kp[lm_idx[5], :], align_kp[lm_idx[6], :]], axis=0)
+    Lm2D = np.stack(
+        [align_kp[lm_idx[0], :], np.mean(align_kp[lm_idx[[1, 2]], :], 0), np.mean(align_kp[lm_idx[[3, 4]], :], 0),
+         align_kp[lm_idx[5], :], align_kp[lm_idx[6], :]], axis=0)
     Lm2D = Lm2D[[1, 2, 0, 3, 4], :]
 
     img = Image.open(image_path)
     w0, h0 = img.size
 
     Lm2D = np.stack([Lm2D[:, 0], h0 - 1 - Lm2D[:, 1]], axis=1)
-    t,s = POS(Lm2D.transpose(), Lm3D.transpose())
+    t, s = POS(Lm2D.transpose(), Lm3D.transpose())
 
     img = img.transform(img.size, Image.AFFINE, (1, 0, t[0] - w0 / 2, 0, 1, h0 / 2 - t[1]))
     w = (w0 / s * 102).astype(np.int32)
     h = (h0 / s * 102).astype(np.int32)
     img = img.resize((w, h), resample=Image.BILINEAR)
-    #lm = np.stack([lm[:, 0] - t[0] + w0 / 2, lm[:, 1] - t[1] + h0 / 2], axis=1) / s * 102
+    # lm = np.stack([lm[:, 0] - t[0] + w0 / 2, lm[:, 1] - t[1] + h0 / 2], axis=1) / s * 102
     lm68 = np.stack([align_kp[:, 0] - t[0] + w0 / 2, align_kp[:, 1] + t[1] - h0 / 2], axis=1) / s * 102
     # crop the image to 224*224 from image center
     left = (w / 2 - 112).astype(np.int32)
@@ -178,9 +182,10 @@ def isRotationMatrix(R):
     '''
     Rt = np.transpose(R)
     shouldBeIdentity = np.dot(Rt, R)
-    I = np.identity(3, dtype = R.dtype)
+    I = np.identity(3, dtype=R.dtype)
     n = np.linalg.norm(I - shouldBeIdentity)
     return n < 1e-6
+
 
 def matrix2angle(R):
     ''' get three Euler angles from Rotation Matrix
@@ -207,6 +212,7 @@ def matrix2angle(R):
 
     return x, y, z
 
+
 def P2sRt(P):
     ''' decompositing camera matrix P
     Args:
@@ -219,9 +225,9 @@ def P2sRt(P):
     t = P[:, 3]
     R1 = P[0:1, :3]
     R2 = P[1:2, :3]
-    s = (np.linalg.norm(R1) + np.linalg.norm(R2))/2.0
-    r1 = R1/np.linalg.norm(R1)
-    r2 = R2/np.linalg.norm(R2)
+    s = (np.linalg.norm(R1) + np.linalg.norm(R2)) / 2.0
+    r1 = R1 / np.linalg.norm(R1)
+    r2 = R2 / np.linalg.norm(R2)
     r3 = np.cross(r1, r2)
 
     R = np.concatenate((r1, r2, r3), 0)
@@ -239,15 +245,84 @@ def compute_face_norm(vertices, triangles):
 
     return face_norm
 
+
 def compute_point_norm(vertices, triangles, point_buf):
     batch = len(vertices)
     face_norm = compute_face_norm(vertices, triangles)
 
-    face_norm = torch.cat([face_norm, torch.zeros((batch,1,3)).to(vertices.device)], dim=1)
+    face_norm = torch.cat([face_norm, torch.zeros((batch, 1, 3)).to(vertices.device)], dim=1)
 
-    v_norm = torch.sum(face_norm[:,point_buf,:],dim=2)
+    v_norm = torch.sum(face_norm[:, point_buf, :], dim=2)
     v_norm = v_norm / (torch.norm(v_norm, dim=2).unsqueeze(2))
     return v_norm
 
+
 def texture_mapping(image, geo, s, R, t):
     pass
+
+
+from matplotlib.path import Path
+
+
+def inpolygon(xq, yq, xv, yv):
+    """
+    reimplement inpolygon in matlab
+    :type xq: np.ndarray
+    :type yq: np.ndarray
+    :type xv: np.ndarray
+    :type yv: np.ndarray
+    """
+    # 合并xv和yv为顶点数组
+    vertices = np.vstack((xv, yv)).T
+    # 定义Path对象
+    path = Path(vertices)
+    # 把xq和yq合并为test_points
+    test_points = np.hstack([xq.reshape(xq.size, -1), yq.reshape(yq.size, -1)])
+    # 得到一个test_points是否严格在path内的mask，是bool值数组
+    _in = path.contains_points(test_points)
+    # 得到一个test_points是否在path内部或者在路径上的mask
+    _in_on = path.contains_points(test_points, radius=-1e-10)
+    # 得到一个test_points是否在path路径上的mask
+    _on = _in ^ _in_on
+
+    return _in_on, _on
+
+
+def create_mask_fiducial(fiducials, image):
+    # fiducials: 2x68
+    border_fid = fiducials[:, 0:17]
+    face_fid = fiducials[:, 18:]
+
+    c1 = np.array([[border_fid[0, 0]], [face_fid[1, 2]]])
+    c2 = np.array([[border_fid[0, 16]], [face_fid[1, 7]]])
+
+    eye = np.linalg.norm(face_fid[:, 22] - face_fid[:, 25])
+    c3, c4 = face_fid[:, 2], face_fid[:, 7]
+    c3[1] = c3[1] - 0.3 * eye
+    c4[1] = c4[1] - 0.3 * eye
+
+    border = np.column_stack([c1, border_fid, c2, c4, c3])
+
+    h, w = image.shape[0:2]
+
+    X, Y = np.meshgrid(np.arange(w), np.arange(h))
+
+    _in, _on = inpolygon(X.reshape(-1), Y.reshape(-1), border[0, :], border[1, :])
+
+    mask = np.round(np.reshape(_in + _on, (h, w)))
+    return (mask * 255).astype(np.uint8)
+
+
+def save_obj(v,c,f,save_path):
+    folder = os.path.split(save_path)[0]
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    with open(save_path, 'w') as file:
+        for i in range(len(c)):
+            file.write('v %f %f %f %f %f %f\n' % (v[i, 0], v[i, 1], v[i, 2], c[i, 0], c[i, 1], c[i, 2]))
+
+        file.write('\n')
+
+        for i in range(len(f)):
+            file.write('f %d %d %d\n' % (f[i, 0], f[i, 1], f[i, 2]))
+    file.close()
