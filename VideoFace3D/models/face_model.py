@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from scipy.io import loadmat
-from MorphableModelFitting.utils.Global import *
+from VideoFace3D.utils.Global import *
 
 class FaceModelBFM():
     def __init__(self):

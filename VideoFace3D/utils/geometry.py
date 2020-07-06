@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from scipy.io import loadmat, savemat
 from PIL import Image
-from MorphableModelFitting.utils.Global import *
+from VideoFace3D.utils.Global import *
 import neural_renderer as nr
 import math
 

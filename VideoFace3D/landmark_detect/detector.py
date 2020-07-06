@@ -1,9 +1,9 @@
-from MorphableModelFitting.utils.Global import *
+from VideoFace3D.utils.Global import *
 import torch
-from MorphableModelFitting.landmark_detect import ddfa_mobilenet as mobilenet_v1
+from VideoFace3D.landmark_detect import ddfa_mobilenet as mobilenet_v1
 import dlib
-from MorphableModelFitting.landmark_detect.ddfa_landmarks import detect_landmark_ddfa_3D
-from MorphableModelFitting.landmark_detect.dlib_landmark import detect_landmark_dlib_2D
+from VideoFace3D.landmark_detect.ddfa_landmarks import detect_landmark_ddfa_3D
+from VideoFace3D.landmark_detect.dlib_landmark import detect_landmark_dlib_2D
 import sys
 
 

@@ -6,14 +6,14 @@ import sys
 #print(sys.path)
 #import MorphableModelFitting as mmf
 
-from MorphableModelFitting.face_track.align import detect_face
+from VideoFace3D.face_track.align import detect_face
 import cv2
 import numpy as np
 import tensorflow as tf
-from MorphableModelFitting.face_track.lib.face_utils import judge_side_face
-from MorphableModelFitting.face_track.lib.utils import Logger, mkdir
-from MorphableModelFitting.utils.Global import project_dir
-from MorphableModelFitting.face_track.src.sort import Sort
+from VideoFace3D.face_track.lib.face_utils import judge_side_face
+from VideoFace3D.face_track.lib.utils import Logger, mkdir
+from VideoFace3D.utils.Global import project_dir
+from VideoFace3D.face_track.src.sort import Sort
 import copy
 
 

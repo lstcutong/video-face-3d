@@ -6,7 +6,7 @@ import numpy as np
 from math import sqrt
 import scipy.io as sio
 import matplotlib.pyplot as plt
-from MorphableModelFitting.landmark_detect.ddfa_ddfa import reconstruct_vertex
+from VideoFace3D.landmark_detect.ddfa_ddfa import reconstruct_vertex
 
 
 def get_suffix(filename):

@@ -1,12 +1,12 @@
 import torch.nn as nn
 import torch
-from MorphableModelFitting.utils.geometry import *
-from MorphableModelFitting.renderer.render import Renderer
-from MorphableModelFitting.models.face_model import *
+from VideoFace3D.utils.geometry import *
+from VideoFace3D.renderer.render import Renderer
+from VideoFace3D.models.face_model import *
 import cv2
 import copy
-from MorphableModelFitting.landmark_detect.detector import FaceLandmarkDetector
-from MorphableModelFitting.utils.geometry import alignment_and_crop, estimate_affine_matrix_3d22d, matrix2angle, P2sRt
+from VideoFace3D.landmark_detect.detector import FaceLandmarkDetector
+from VideoFace3D.utils.geometry import alignment_and_crop, estimate_affine_matrix_3d22d, matrix2angle, P2sRt
 import sys
 import tensorflow as tf
 import numpy as np

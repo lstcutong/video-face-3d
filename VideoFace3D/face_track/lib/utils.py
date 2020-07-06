@@ -5,7 +5,7 @@ import uuid
 from operator import itemgetter
 
 import cv2
-from MorphableModelFitting.utils.Global import *
+from VideoFace3D.utils.Global import *
 
 log_file_root_path = os.path.join(project_dir, 'logs')
 log_time = time.strftime('%Y_%m_%d_%H_%M', time.localtime(time.time()))

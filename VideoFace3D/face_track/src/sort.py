@@ -5,8 +5,8 @@ As implemented in https://github.com/abewley/sort but with some modifications
 from __future__ import print_function
 
 import numpy as np
-from MorphableModelFitting.face_track.src.data_association import associate_detections_to_trackers
-from MorphableModelFitting.face_track.src.kalman_tracker import KalmanBoxTracker
+from VideoFace3D.face_track.src.data_association import associate_detections_to_trackers
+from VideoFace3D.face_track.src.kalman_tracker import KalmanBoxTracker
 
 #logger = utils.Logger("MOT")
 

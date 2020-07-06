@@ -7,7 +7,7 @@ Reference: https://github.com/YadiraF/PRNet/blob/master/utils/estimate_pose.py
 
 from math import cos, sin, atan2, asin, sqrt
 import numpy as np
-from MorphableModelFitting.landmark_detect.ddfa_params import param_mean, param_std
+from VideoFace3D.landmark_detect.ddfa_params import param_mean, param_std
 
 
 def parse_pose(param):

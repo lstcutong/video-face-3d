@@ -10,8 +10,8 @@ import torch.utils.data as data
 import cv2
 import pickle
 import argparse
-from MorphableModelFitting.landmark_detect.ddfa_io import _numpy_to_tensor, _load_cpu, _load_gpu
-from MorphableModelFitting.landmark_detect.ddfa_params import *
+from VideoFace3D.landmark_detect.ddfa_io import _numpy_to_tensor, _load_cpu, _load_gpu
+from VideoFace3D.landmark_detect.ddfa_params import *
 
 
 def _parse_param(param):

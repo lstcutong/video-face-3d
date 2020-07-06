@@ -4,12 +4,12 @@ import torchvision.transforms as transforms
 import numpy as np
 import cv2
 import dlib
-from MorphableModelFitting.landmark_detect.ddfa_ddfa import ToTensorGjz, NormalizeGjz, str2bool
+from VideoFace3D.landmark_detect.ddfa_ddfa import ToTensorGjz, NormalizeGjz, str2bool
 
-from MorphableModelFitting.landmark_detect.ddfa_inference import get_suffix, parse_roi_box_from_landmark, crop_img, \
+from VideoFace3D.landmark_detect.ddfa_inference import get_suffix, parse_roi_box_from_landmark, crop_img, \
     predict_68pts, dump_to_ply, dump_vertex, \
     draw_landmarks, predict_dense, parse_roi_box_from_bbox, get_colors, write_obj_with_colors
-from MorphableModelFitting.landmark_detect.ddfa_estimate_pose import parse_pose
+from VideoFace3D.landmark_detect.ddfa_estimate_pose import parse_pose
 
 STD_SIZE = 120
 

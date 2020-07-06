@@ -6,10 +6,10 @@ import torch.nn as nn
 import numpy
 
 import neural_renderer as nr
-from MorphableModelFitting.renderer.weak_projection import weak_projection
-from MorphableModelFitting.utils.geometry import texture_from_point2faces, euler2rot, compute_face_norm, compute_point_norm
-from MorphableModelFitting.renderer.lightning import *
-from MorphableModelFitting.models.face_model import FaceModelBFM
+from VideoFace3D.renderer.weak_projection import weak_projection
+from VideoFace3D.utils.geometry import texture_from_point2faces, euler2rot, compute_face_norm, compute_point_norm
+from VideoFace3D.renderer.lightning import *
+from VideoFace3D.models.face_model import FaceModelBFM
 
 class Renderer(nn.Module):
     def __init__(self, image_size=256, anti_aliasing=True, background_color=[0, 0, 0],

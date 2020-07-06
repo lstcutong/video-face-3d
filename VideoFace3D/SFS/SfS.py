@@ -4,12 +4,12 @@ import numpy as np
 import cv2
 import torch
 
-from MorphableModelFitting.SFS.SFSNet.functions import create_shading_recon
-from MorphableModelFitting.SFS.SFSNet.mask import MaskGenerator
-from MorphableModelFitting.SFS.SFSNet.model import SfSNet
-from MorphableModelFitting.SFS.SFSNet.utils import convert
-from MorphableModelFitting.utils.Global import SFSNET_PATH
-from MorphableModelFitting.utils.geometry import *
+from VideoFace3D.SFS.SFSNet.functions import create_shading_recon
+from VideoFace3D.SFS.SFSNet.mask import MaskGenerator
+from VideoFace3D.SFS.SFSNet.model import SfSNet
+from VideoFace3D.SFS.SFSNet.utils import convert
+from VideoFace3D.utils.Global import SFSNET_PATH
+from VideoFace3D.utils.geometry import *
 from PIL import Image
 
 class SfSPipline():
