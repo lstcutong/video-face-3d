@@ -4,3 +4,4 @@ from .models import *
 from .renderer import *
 from .utils import *
 from .SFS import *
+from .segmentation import *

@@ -48,14 +48,21 @@
 
 <img src="./examples/example_results/fitting.png" width="400" height="458" />
 
+- segmetation 单图像结果
+
+```
+cd examples
+python examples_segementation_single_image.py
+```
+
+<img src="./examples/example_results/segmentation.png" width="700" height="373" />
+
 - SFS- shape-from-shading 单图像结果
 
 ```
 cd examples
 python example_sfs_single_image.py
 ```
-
-
 
 <img src="./examples/example_results/sfs.png" width="700" height="303" />
 
