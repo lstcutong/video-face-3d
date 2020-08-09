@@ -37,7 +37,7 @@
   python example_landmarks_single_image.py
   ```
 
-<img src="./examples/example_results/landmark.png" width="500" height="406" />
+<img src="https://github.com/lstcutong/video-face-3d/raw/master/examples/example_results/landmark.png" width="500" height="406" />
 
 - 3DMM参数化模型拟合-单图像结果
 
@@ -46,7 +46,7 @@
   python example_fitting_single_image.py
   ```
 
-<img src="./examples/example_results/fitting.png" width="400" height="458" />
+<img src="https://github.com/lstcutong/video-face-3d/raw/master/examples/example_results/fitting.png" width="400" height="458" />
 
 - segmetation 单图像结果
 
@@ -55,7 +55,7 @@ cd examples
 python examples_segementation_single_image.py
 ```
 
-<img src="https://github.com/lstcutong/video-face-3d/master/examples/example_results/segmentation.png" width="700" height="373" />
+<img src="https://github.com/lstcutong/video-face-3d/raw/master/examples/example_results/segmentation.png" width="700" height="373" />
 
 - SFS- shape-from-shading 单图像结果
 
@@ -64,7 +64,7 @@ cd examples
 python example_sfs_single_image.py
 ```
 
-<img src="./examples/example_results/sfs.png" width="700" height="303" />
+<img src="https://github.com/lstcutong/video-face-3d/raw/master/examples/example_results/sfs.png" width="700" height="303" />
 
 ## TODO
 
