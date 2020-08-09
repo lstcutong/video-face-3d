@@ -55,7 +55,7 @@ cd examples
 python examples_segementation_single_image.py
 ```
 
-<img src="./examples/example_results/segmentation.png" width="700" height="373" />
+<img src="https://github.com/lstcutong/video-face-3d/master/examples/example_results/segmentation.png" width="700" height="373" />
 
 - SFS- shape-from-shading 单图像结果
 
