@@ -9,7 +9,7 @@ from VideoFace3D.landmark_detect.ddfa_ddfa import ToTensorGjz, NormalizeGjz, str
 from VideoFace3D.landmark_detect.ddfa_inference import get_suffix, parse_roi_box_from_landmark, crop_img, \
     predict_68pts, dump_to_ply, dump_vertex, \
     draw_landmarks, predict_dense, parse_roi_box_from_bbox, get_colors, write_obj_with_colors
-from VideoFace3D.landmark_detect.ddfa_estimate_pose import parse_pose
+from VideoFace3D.landmark_detect.ddfa_estimate_pose import parse_pose, get_rotate_matrix
 
 STD_SIZE = 120
 
@@ -37,7 +37,6 @@ def detect_landmark_ddfa_3D_shape(image_path, model, face_regressor, device, bbo
     all_vertices = []
     all_colors = []
     for rect in rects:
-
 
         if dlib_landmarks:
             pts = face_regressor(img_ori, rect).parts()
@@ -70,12 +69,18 @@ def detect_landmark_ddfa_3D_shape(image_path, model, face_regressor, device, bbo
 
         pts_res.append(pts68.transpose(1, 0)[:, 0:2])
         P, pose = parse_pose(param)
+
         Ps.append(P)
         poses.append(pose)
 
         vertices = predict_dense(param, roi_box)
         colors = get_colors(img_ori, vertices)
-        all_vertices.append(vertices)
-        all_colors.append(colors)
-    return all_vertices, all_colors
 
+        vertices = predict_dense(param, roi_box, rotate=False)
+        #R = get_rotate_matrix(param)
+
+        #vertices = np.linalg.inv(R) @ vertices
+
+        all_vertices.append(vertices.transpose((1, 0)))
+        all_colors.append(colors[:, ::-1])
+    return np.array(all_vertices), np.array(all_colors)

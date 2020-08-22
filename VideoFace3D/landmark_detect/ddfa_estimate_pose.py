@@ -21,6 +21,12 @@ def parse_pose(param):
     # offset = p_[:, -1].reshape(3, 1)
     return P, pose
 
+def get_rotate_matrix(param):
+    param = param * param_std + param_mean
+    Ps = param[:12].reshape(3, -1)  # camera matrix
+    R = Ps[:, :3]
+
+    return R
 
 def matrix2angle(R):
     ''' compute three Euler angles from a Rotation Matrix. Ref: http://www.gregslabaugh.net/publications/euler.pdf

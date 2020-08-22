@@ -124,8 +124,8 @@ def dump_vertex(vertex, wfp):
     print('Dump to {}'.format(wfp))
 
 
-def _predict_vertices(param, roi_bbox, dense, transform=True):
-    vertex = reconstruct_vertex(param, dense=dense)
+def _predict_vertices(param, roi_bbox, dense, transform=True, rotate=True):
+    vertex = reconstruct_vertex(param, dense=dense, rotate=rotate)
     sx, sy, ex, ey = roi_bbox
     scale_x = (ex - sx) / 120
     scale_y = (ey - sy) / 120
@@ -142,8 +142,8 @@ def predict_68pts(param, roi_box):
     return _predict_vertices(param, roi_box, dense=False)
 
 
-def predict_dense(param, roi_box):
-    return _predict_vertices(param, roi_box, dense=True)
+def predict_dense(param, roi_box, rotate=True):
+    return _predict_vertices(param, roi_box, dense=True, rotate=rotate)
 
 
 def draw_landmarks(img, pts, style='fancy', wfp=None, show_flg=False, **kwargs):
