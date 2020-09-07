@@ -3,9 +3,6 @@ import os
 from time import time
 import sys
 
-#print(sys.path)
-#import MorphableModelFitting as mmf
-
 from VideoFace3D.face_track.align import detect_face
 import cv2
 import numpy as np
@@ -14,11 +11,14 @@ from VideoFace3D.face_track.lib.face_utils import judge_side_face
 from VideoFace3D.face_track.lib.utils import Logger, mkdir
 from VideoFace3D.utils.Global import project_dir
 from VideoFace3D.face_track.src.sort import Sort
+from VideoFace3D.utils.video_utils import progressbar
 import copy
 
+import warnings
+warnings.filterwarnings("ignore")
 
 class FaceTracker():
-    def __init__(self, scale_rate=1.0, detect_interval=1, face_score_threshold=0.85, margin=15):
+    def __init__(self, scale_rate=1.0, detect_interval=1, face_score_threshold=0.85, margin=15, echo=False):
         self.scale_rate = scale_rate
         self.detect_interval = detect_interval
         self.face_score_threshold = face_score_threshold
@@ -29,6 +29,8 @@ class FaceTracker():
         self.threshold = [0.6, 0.7, 0.7]  # three steps's threshold
         self.factor = 0.709  # scale factor
 
+        self.echo = echo
+
     def start_track(self, video_path):
         with tf.Graph().as_default():
             with tf.Session(config=tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True),
@@ -37,9 +39,12 @@ class FaceTracker():
                                                                                               "../face_track/align"))
 
                 cam = cv2.VideoCapture(video_path)
+                frame_numbers = int(cam.get(cv2.CAP_PROP_FRAME_COUNT))
+                ccount = 0
                 c = 0
                 all_result = []
                 while True:
+                    ccount += 1
                     final_faces = []
                     addtional_attribute_list = []
                     ret, frame = cam.read()
@@ -105,5 +110,8 @@ class FaceTracker():
                         people.append((bb, d[4]))
 
                     all_result.append((frame, people))
+
+                    if self.echo:
+                        progressbar(ccount, frame_numbers, prefix="tracking...")
 
         return all_result

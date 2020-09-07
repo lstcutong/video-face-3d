@@ -85,4 +85,16 @@ def draw_landmarks(image, landmarks, plot_index=False, colors=None):
     return image1
 
 
+def draw_bbox(image, bboxs, colors=None):
+    image1 = image.copy()
+    for i in range(len(bboxs)):
+        if colors is not None:
+            color = colors[i % len(colors)]
+        else:
+            color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        image1 = cv2.rectangle(image1, (bboxs[i][0], bboxs[i][1]), (bboxs[i][2], bboxs[i][3]), color[i])
+    return image1
+
+
+
 
