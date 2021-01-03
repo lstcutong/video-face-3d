@@ -4,6 +4,11 @@ import sys
 from VideoFace3D.utils.Global import *
 from VideoFace3D.utils.temporal_smooth import *
 
+def id_generator(number, id_len=4):
+    number = str(number)
+    assert len(number) < id_len
+
+    return "0" * (id_len - len(number)) + number
 
 def progressbar(current, total, num=40, prefix=""):
     sys.stdout.write("\r{} {}/{} |{}{}| {:.2f}%".format(prefix, current, total,
@@ -13,20 +18,6 @@ def progressbar(current, total, num=40, prefix=""):
     sys.stdout.flush()
     if current == total:
         print("")
-
-
-def extract_video_frames(video_path):
-    cap = cv2.VideoCapture(video_path)
-
-    all_frame = []
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-        all_frame.append(frame)
-    cap.release()
-    cv2.destroyAllWindows()
-    return all_frame
 
 def str2seconds(time):
     try:
@@ -42,11 +33,12 @@ def str2seconds(time):
         assert False, "wrong time format"
         #sys.exit(0)
 
-def extacted_videos(video_path, save_path=None, time_start="default", time_end="default"):
+def extract_frame_from_video(video_path, save_path=None, ret_frame=True, time_start="default", time_end="default"):
     start_frame, end_frame = 0, 0
-
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
+    
+    if save_path is not None:
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
 
     cap = cv2.VideoCapture(video_path)
 
@@ -69,7 +61,7 @@ def extacted_videos(video_path, save_path=None, time_start="default", time_end="
 
     assert start_frame <= end_frame
 
-    iters = end_frame - start_frame
+    iters = int(end_frame - start_frame)
 
     cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
 
@@ -78,13 +70,15 @@ def extacted_videos(video_path, save_path=None, time_start="default", time_end="
         ret, frame = cap.read()
         if frame is None:
             break
-
-        all_frames.append(frame)
+        if ret_frame:
+            all_frames.append(frame)
         if save_path is not None:
-            cv2.imwrite(os.path.join(save_path, "{}.png".format(count)), frame)
+            cv2.imwrite(os.path.join(save_path, "{}.png".format(id_generator(count, 7))), frame)
             progressbar(count+1, iters, prefix="extract")
-
-    return all_frames
+    if ret_frame:
+        return all_frames
+    else:
+        return None
 
 def frames2video(save_path, frames, fps=24):
     base_folder = os.path.split(save_path)[0]
